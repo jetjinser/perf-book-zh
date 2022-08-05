@@ -1,5 +1,7 @@
 # 构建配置
 
+> by @[sinsong](https://github.com/sinsong)
+
 良好的构建配置可以提升 Rust 程序的性能，不需要修改程序代码。
 
 ## Release 构建
@@ -7,65 +9,65 @@
 Rust 性能建议中最重要的一点很简单，但也 [容易被忽视]： 当你需要更好的性能的时候，确保你使用 release 构建，而不是 debug 构建。
 通常给 Cargo 指定 `--release` 标志就可以做到。
 
-[容易被忽视]: https://users.rust-lang.org/t/why-my-rust-program-is-so-slow/47764/5
+[容易被忽视]: extern/47764.md
 
 release 构建运行的通常比 debug 构建快 *很多*。
-比 debug 构建快 10-100x 很正常！
+比 debug 构建快 10-100 倍很正常！
 
 debug 构建是默认的。
 如果你运行 `cargo build`，`cargo run`，`rustc`，并且不带其他选项，就会产生 debug 构建。
 debug 构建对调试很有用，但是并不优化。
 
-考虑一个 `cargo build` 运行输出的最后一行。
+看看 `cargo build` 运行后输出的最后一行：
 ```text
 Finished dev [unoptimized + debuginfo] target(s) in 29.80s
 ```
-`[unoptimized + debuginfo]` 表示产生的是 debug 构建。
+`[unoptimized + debuginfo]` 表示生成的是 debug 构建。
 编译后的代码会放在 `target/debug/` 目录中。
 `cargo run` 会运行 debug 构建的程序。
 
 release 构建相较于 debug 构建，会有更多优化。
 也会忽略一些检查，例如调试断言(debug assertions)，以及整数溢出检查。
-使用 `cargo build --release`，`cargo run --release`，`rustc -O` 来产生。
-（另外，`rustc` 对优化的构建来说有许多其他选项，例如 `-C opt-level`。）
-通常会比 debug 构建花费更长的时间，因为额外的优化。
+可以用 `cargo build --release`，`cargo run --release`，`rustc -O` 生成。
+（另外，`rustc` 有许多其他优化选项，例如 `-C opt-level`。）
+因为额外的优化，这通常会比 debug 构建花费更长的时间。
 
-考虑 `cargo build --release` 运行输出的最后一行。
+看看 `cargo build --release` 运行后输出的最后一行：
 ```text
 Finished release [optimized] target(s) in 1m 01s
 ```
-`[optimized]` 表示产生的是 release 构建。
-编译后的代码会放在 `target/release/` 目录里。
-`cargo run --release` 会运行 release 构建的程序。
+`[optimized]` 表示生成的是 release 构建。
+编译好的代码会放在 `target/release/` 目录中。
+`cargo run --release` 会运行 release 构建。
 
-参考 [Cargo profile documentation] 来进一步获得关于 debug 构建（使用 `dev` profile）和 release 构建（使用 `release` profile）之间的区别。
+如果想要进一步了解 debug 构建（使用 `dev` profile）和 release 构建（使用 `release` profile）之间的区别，可以参考 [Cargo profile文档]。
 
-[Cargo profile documentation]: https://doc.rust-lang.org/cargo/reference/profiles.html
+[Cargo profile文档]: https://doc.rust-lang.org/cargo/reference/profiles.html
 
 ## 链接时优化
 
-链接时优化 (Link-time optimization, LTO) 是一种整个程序范围的优化技术，
+链接时优化 (Link-time optimization, LTO) 是一种适用于整个程序的优化技术，
 以增加构建时间为代价，可以提高 10%-20% 或更多的运行时性能，
-对于任意单个 Rust 程序来说，很容易看到运行时与编译时的权衡是值得的。
+对于单个 Rust 程序，通常用编译时间换取运行性能是值得的。
 
-尝试 LTO 最简单的方法是，向 `Cargo.toml` 中添加下列行，接着进行 release 构建。
+启用 LTO 最简单的方法是，向 `Cargo.toml` 中添加下列行，然后进行 release 构建。
 ```toml
 [profile.release]
 lto = true
 ```
 这会导致 "重量级"(fat) LTO，会优化依赖图中的所有 creat。
 
-另外，在 `Cargo.toml` 中使用 `lto = "thin"` 来使用 "轻量级"(thin) LTO，是不那么基金的 LTO 形式，通常与 重量级 LTO 一样有效，但不会过多增加构建时间。
+另外，在 `Cargo.toml` 中使用 `lto = "thin"` 则会启用 "轻量级"(thin) LTO——一种不那么激进的 LTO 形式，通常与 重量级 LTO 一样有效，但不会过多增加构建时间。
 
-参考 [Cargo LTO documentation] 获得有关 `lto` 设置的更多细节，以及对不同 profile 开启特定设置的相关细节。
+你可以通过 [Cargo LTO文档] 深入了解 `lto` 设置，以及如何对不同 profile 启用特定设置。
 
-[Cargo LTO documentation]: https://doc.rust-lang.org/cargo/reference/profiles.html#lto
+[Cargo LTO文档]: https://doc.rust-lang.org/cargo/reference/profiles.html#lto
 
 ## Codegen Units
 
 Rust 编译器将 crate 拆分为多个 [代码生成单元] 来并行化（同时加速）编译。
-然而，这会导致它错过一些潜在的优化。
-如果你想要潜在的提升运行时性能，以更长的编译时间为代价，你可以将单元数设置为 1：
+然而，这会导致它错过一些可能的优化。
+如果你想要以更长的编译时间为代价，提升运行时性能，你可以将单元数设置为 1：
 ```toml
 [profile.release]
 codegen-units = 1
