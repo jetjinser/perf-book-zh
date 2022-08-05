@@ -2,8 +2,8 @@
 
 [标题](title-page.md)
 
-- [Introduction](introduction.md)
-- [Benchmarking](benchmarking.md)
+- [简介](introduction.md)
+- [基准测试](benchmarking.md)
 - [Build Configuration](build-configuration.md)
 - [Linting](linting.md)
 - [Profiling](profiling.md)

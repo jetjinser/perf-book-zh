@@ -1,10 +1,7 @@
-# Benchmarking
+# 基准测试
 
-Benchmarking typically involves comparing the performance of two or more
-programs that do the same thing. Sometimes this might involve comparing two or
-more different programs, e.g. Firefox vs Safari vs Chrome. Sometimes it
-involves comparing two different versions of the same program. This latter case
-lets us reliably answer the question "did this change speed things up?"
+基准测试通常用于比较多个功能相同的程序的性能。有时要比较多个不同的程序，比如，火狐、Chrome、Safari。
+有时则要比较一个程序的不同版本。后者可以用于验证“这个修改会让它更快吗？”。
 
 Benchmarking is a complex topic and a thorough coverage is beyond the scope of
 this book, but here are the basics.
