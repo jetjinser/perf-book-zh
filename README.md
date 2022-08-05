@@ -2,6 +2,8 @@
 
 《The Rust Performance Book》的中文翻译
 
+这里是重新开始的翻译，原翻译已经被删除。
+
 ## 主要贡献者
 
 [莉特雅姐姐](https://github.com/sinsong)，[恒星姐姐](https://github.com/star-hengxing)，[jinser](https://github.com/jetjinser)
