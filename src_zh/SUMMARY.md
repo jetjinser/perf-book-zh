@@ -4,7 +4,7 @@
 
 - [简介](introduction.md)
 - [基准测试](benchmarking.md)
-- [Build Configuration](build-configuration.md)
+- [构建配置](build-configuration.md)
 - [Linting](linting.md)
 - [Profiling](profiling.md)
 - [Inlining](inlining.md)
