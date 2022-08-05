@@ -1,7 +1,6 @@
-# Binary Size
+# 二进制大小
 
-Sometimes you might need to minimize the size of a compiled Rust binary. In
-that case, you should consult the comprehensive documentation in the excellent
-[`min-sized-rust`] repository.
+有时候你可能需要减小 Rust 编译后的二进制文件体积。
+这种情况的话，你应该参考 [`min-sized-rust`] 仓库中更全面的文档。
 
 [`min-sized-rust`]: https://github.com/johnthagen/min-sized-rust
