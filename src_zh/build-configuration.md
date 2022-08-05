@@ -1,130 +1,108 @@
-# Build Configuration
+# 构建配置
 
-The right build configuration will maximize the performance of your Rust
-program without any changes to its code.
+> by @[sinsong](https://github.com/sinsong)
 
-## Release Builds
+良好的构建配置可以提升 Rust 程序的性能，不需要修改程序代码。
 
-The single most important Rust performance tip is simple but [easy to
-overlook]: make sure you are using a release build rather than a debug build
-when you want high performance. This is most often done by specifying the
-`--release` flag to Cargo.
+## Release 构建
 
-[easy to overlook]: https://users.rust-lang.org/t/why-my-rust-program-is-so-slow/47764/5
+Rust 性能建议中最重要的一点很简单，但也 [容易被忽视]： 当你需要更好的性能的时候，确保你使用 release 构建，而不是 debug 构建。
+通常给 Cargo 指定 `--release` 标志就可以做到。
 
-A release build typically runs *much* faster than a debug build. 10-100x
-speedups over debug builds are common!
+[容易被忽视]: extern/47764.md
 
-Debug builds are the default. They are produced if you run `cargo build`,
-`cargo run`, or `rustc` without any additional options. Debug builds are good
-for debugging, but are not optimized.
+release 构建运行的通常比 debug 构建快 *很多*。
+比 debug 构建快 10-100 倍很正常！
 
-Consider the following final line of output from a `cargo build` run.
+debug 构建是默认的。
+如果你运行 `cargo build`，`cargo run`，`rustc`，并且不带其他选项，就会产生 debug 构建。
+debug 构建对调试很有用，但是并不优化。
+
+看看 `cargo build` 运行后输出的最后一行：
 ```text
 Finished dev [unoptimized + debuginfo] target(s) in 29.80s
 ```
-The `[unoptimized + debuginfo]` indicates that a debug build has been produced.
-The compiled code will be placed in the `target/debug/` directory. `cargo run`
-will run the debug build.
+`[unoptimized + debuginfo]` 表示生成的是 debug 构建。
+编译后的代码会放在 `target/debug/` 目录中。
+`cargo run` 会运行 debug 构建的程序。
 
-Release builds are more optimized than debug builds. They also omit some
-checks, such as debug assertions and integer overflow checks. Produce one with
-`cargo build --release`, `cargo run --release`, or `rustc -O`. (Alternatively,
-`rustc` has multiple other options for optimized builds, such as `-C
-opt-level`.) This will typically take longer than a debug build because of the
-additional optimizations.
+release 构建相较于 debug 构建，会有更多优化。
+也会忽略一些检查，例如调试断言(debug assertions)，以及整数溢出检查。
+可以用 `cargo build --release`，`cargo run --release`，`rustc -O` 生成。
+（另外，`rustc` 有许多其他优化选项，例如 `-C opt-level`。）
+因为额外的优化，这通常会比 debug 构建花费更长的时间。
 
-Consider the following final line of output from a `cargo build --release` run.
+看看 `cargo build --release` 运行后输出的最后一行：
 ```text
 Finished release [optimized] target(s) in 1m 01s
 ```
-The `[optimized]` indicates that a release build has been produced. The
-compiled code will be placed in the `target/release/` directory. `cargo run
---release` will run the release build.
+`[optimized]` 表示生成的是 release 构建。
+编译好的代码会放在 `target/release/` 目录中。
+`cargo run --release` 会运行 release 构建。
 
-See the [Cargo profile documentation] for more details about the differences
-between debug builds (which use the `dev` profile) and release builds (which
-use the `release` profile).
+如果想要进一步了解 debug 构建（使用 `dev` profile）和 release 构建（使用 `release` profile）之间的区别，可以参考 [Cargo profile文档]。
 
-[Cargo profile documentation]: https://doc.rust-lang.org/cargo/reference/profiles.html
+[Cargo profile文档]: https://doc.rust-lang.org/cargo/reference/profiles.html
 
-## Link-time Optimization
+## 链接时优化
 
-Link-time optimization (LTO) is a whole-program optimization technique that can
-improve runtime performance by 10-20% or more, at the cost of increased build
-times. For any individual Rust program it is easy to see if the runtime versus
-compile-time trade-off is worthwhile.
+链接时优化 (Link-time optimization, LTO) 是一种适用于整个程序的优化技术，
+以增加构建时间为代价，可以提高 10%-20% 或更多的运行时性能，
+对于单个 Rust 程序，通常用编译时间换取运行性能是值得的。
 
-The simplest way to try LTO is to add the following lines to the `Cargo.toml`
-file and do a release build.
+启用 LTO 最简单的方法是，向 `Cargo.toml` 中添加下列行，然后进行 release 构建。
 ```toml
 [profile.release]
 lto = true
 ```
-This will result in "fat" LTO, which optimizes across all crates in the
-dependency graph.
+这会导致 "重量级"(fat) LTO，会优化依赖图中的所有 creat。
 
-Alternatively, use `lto = "thin"` in `Cargo.toml` to use "thin" LTO, which is a
-less aggressive form of LTO that often works as well as "fat" LTO without
-increasing build times as much.
+另外，在 `Cargo.toml` 中使用 `lto = "thin"` 则会启用 "轻量级"(thin) LTO——一种不那么激进的 LTO 形式，通常与 重量级 LTO 一样有效，但不会过多增加构建时间。
 
-See the [Cargo LTO documentation] for more details about the `lto` setting, and
-about enabling specific settings for different profiles.
+你可以通过 [Cargo LTO文档] 深入了解 `lto` 设置，以及如何对不同 profile 启用特定设置。
 
-[Cargo LTO documentation]: https://doc.rust-lang.org/cargo/reference/profiles.html#lto
+[Cargo LTO文档]: https://doc.rust-lang.org/cargo/reference/profiles.html#lto
 
 ## Codegen Units
 
-The Rust compiler splits your crate into multiple [codegen units] to
-parallelize (and thus speed up) compilation. However, this might cause it to
-miss some potential optimizations. If you want to potentially improve runtime
-performance at the cost of larger compile time, you can set the number of units
-to one:
+Rust 编译器将 crate 拆分为多个 [代码生成单元] 来并行化（同时加速）编译。
+然而，这会导致它错过一些可能的优化。
+如果你想要以更长的编译时间为代价，提升运行时性能，你可以将单元数设置为 1：
 ```toml
 [profile.release]
 codegen-units = 1
 ```
-[**Example**](https://likebike.com/posts/How_To_Write_Fast_Rust_Code.html#emit-asm).
+[**示例**](https://likebike.com/posts/How_To_Write_Fast_Rust_Code.html#emit-asm).
 
-[codegen units]: https://doc.rust-lang.org/rustc/codegen-options/index.html#codegen-units
+[代码生成单元]: https://doc.rust-lang.org/rustc/codegen-options/index.html#codegen-units
 
-Be wary that the codegen unit count is a heuristic and thus a smaller count can
-actually result in a slower program.
+请注意，代码生成单元的数量是启发式的，以至于更小的数量可能导致实际产生的程序变慢。
 
-## Using CPU Specific Instructions
+## 使用 CPU 特定的指令
 
-If you do not care that much about the compatibility of your binary on older
-(or other types of) processors, you can tell the compiler to generate the
-newest (and potentially fastest) instructions specific to a [certain CPU
-architecture].
+如果你并不在意你的二进制程序代码在更老（或其他类型的）处理器上的兼容性，你可以告诉编译器生成指定的 [特定 CPU 架构] 上的，最新（并且可能最快）的指令。
 
-[certain CPU architecture]: https://doc.rust-lang.org/1.41.1/rustc/codegen-options/index.html#target-cpu
+[特定 CPU 架构]: https://doc.rust-lang.org/1.41.1/rustc/codegen-options/index.html#target-cpu
 
-For example, if you pass `-C target-cpu=native` to rustc, it will use the best
-instructions for your current CPU:
+例如，如果你向 rustc 传递 `-C target-cpu=native`，他会为你当前 CPU 使用最合适的指令：
 ```bash
 $ RUSTFLAGS="-C target-cpu=native" cargo build --release
 ```
 
-This can have a large effect, especially if the compiler finds vectorization
-opportunities in your code.
+这可能产生很大的影响，特别是当编译器发现了你代码中进行矢量化的机会。
 
-As of July 2022, on M1 Macs there is an [issue] where using `-C
-target-cpu=native` doesn't detect all the CPU features. You need to use `-C
-target-cpu=apple-m1` instead.
+截止 2022 年 7 月，在 M1 Macs 上使用 `-C target-cpu=native` 会有，没有检测到所有 CPU 特性的 [问题]。
+你可以使用 `-C target-cpu=apple-m1` 作为替代。
 
-[issue]: https://github.com/rust-lang/rust/issues/93889
+[问题]: https://github.com/rust-lang/rust/issues/93889
 
-If you are unsure whether `-C target-cpu=native` is working optimally, compare
-the output of `rustc --print cfg` and `rustc --print cfg -C target-cpu=native`
-to see if the CPU features are being detected correctly in the latter case. If
-not, you can use `-C target-feature` to target specific features.
+如果你不确定 `-C target-cpu=native` 是否工作最佳，可以比较 `rustc --print cfg` 和 `rustc --print cfg -C target-cpu=native` 的输出，来检查后者是否正确检测 CPU 特性。
+如果没有，你可以使用 `-C target-feature` 来指定特定特性。
 
-## Abort on `panic!`
+## `panic!` 时 abort
 
-If you do not need to catch or unwind panics, you can tell the compiler to
-simply abort on panics. This might reduce binary size and increase performance
-slightly:
+如果你不需要捕获或展开 panic，你可以告诉编译器在 panic 时简单的 abort。
+这可以减少二进制文件体积，略微增加性能：
 ```toml
 [profile.release]
 panic = "abort"

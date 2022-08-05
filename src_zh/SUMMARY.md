@@ -4,7 +4,7 @@
 
 - [简介](introduction.md)
 - [基准测试](benchmarking.md)
-- [Build Configuration](build-configuration.md)
+- [构建配置](build-configuration.md)
 - [Linting](linting.md)
 - [Profiling](profiling.md)
 - [Inlining](inlining.md)
@@ -18,7 +18,7 @@
 - [Wrapper Types](wrapper-types.md)
 - [Machine Code](machine-code.md)
 - [Parallelism](parallelism.md)
-- [Binary Size](binary-size.md)
+- [二进制大小](binary-size.md)
 - [General Tips](general-tips.md)
 - [Compile Times](compile-times.md)
 
