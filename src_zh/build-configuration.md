@@ -1,4 +1,4 @@
-# 构建配置
+# 编译配置
 
 > by @[sinsong](https://github.com/sinsong)
 
