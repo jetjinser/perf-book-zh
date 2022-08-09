@@ -1,7 +1,7 @@
 # 基准测试
 
-基准测试通常用于比较多个功能相同的程序的性能。有时要比较多个不同的程序，比如，火狐、Chrome、Safari。
-有时则要比较一个程序的不同版本。后者可以用于验证“这个修改会让它更快吗？”。
+基准测试通常用于比较功能相同的程序的性能。有时要比较不同的程序，比如，火狐、Chrome、Safari。
+有时则要比较一个程序的不同版本。这可以验证“这个修改会让它更快吗？”。
 
 Benchmarking is a complex topic and a thorough coverage is beyond the scope of
 this book, but here are the basics.
