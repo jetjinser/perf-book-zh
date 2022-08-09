@@ -20,5 +20,4 @@
 - [Parallelism](parallelism.md)
 - [二进制大小](binary-size.md)
 - [General Tips](general-tips.md)
-- [Compile Times](compile-times.md)
-
+- [编译时间](compile-times.md)

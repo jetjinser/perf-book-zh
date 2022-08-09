@@ -2,7 +2,7 @@
 
 > by @[sinsong](https://github.com/sinsong)
 
-良好的构建配置可以提升 Rust 程序的性能，不需要修改程序代码。
+好的构建配置可以提升 Rust 程序的性能，不需要修改程序代码。
 
 ## Release 构建
 
@@ -12,16 +12,18 @@ Rust 性能建议中最重要的一点很简单，但也 [容易被忽视]： �
 [容易被忽视]: extern/47764.md
 
 release 构建运行的通常比 debug 构建快 *很多*。
-比 debug 构建快 10-100 倍很正常！
+比 debug 构建快 10-100 倍很正常。
 
-debug 构建是默认的。
-如果你运行 `cargo build`，`cargo run`，`rustc`，并且不带其他选项，就会产生 debug 构建。
+默认的是debug构建——
+如果你运行 `cargo build`，`cargo run`，`rustc`，并且不带其他选项，就会生成 debug 构建。
 debug 构建对调试很有用，但是并不优化。
 
 看看 `cargo build` 运行后输出的最后一行：
+
 ```text
 Finished dev [unoptimized + debuginfo] target(s) in 29.80s
 ```
+
 `[unoptimized + debuginfo]` 表示生成的是 debug 构建。
 编译后的代码会放在 `target/debug/` 目录中。
 `cargo run` 会运行 debug 构建的程序。
@@ -33,9 +35,11 @@ release 构建相较于 debug 构建，会有更多优化。
 因为额外的优化，这通常会比 debug 构建花费更长的时间。
 
 看看 `cargo build --release` 运行后输出的最后一行：
+
 ```text
 Finished release [optimized] target(s) in 1m 01s
 ```
+
 `[optimized]` 表示生成的是 release 构建。
 编译好的代码会放在 `target/release/` 目录中。
 `cargo run --release` 会运行 release 构建。
@@ -51,11 +55,13 @@ Finished release [optimized] target(s) in 1m 01s
 对于单个 Rust 程序，通常用编译时间换取运行性能是值得的。
 
 启用 LTO 最简单的方法是，向 `Cargo.toml` 中添加下列行，然后进行 release 构建。
+
 ```toml
 [profile.release]
 lto = true
 ```
-这会导致 "重量级"(fat) LTO，会优化依赖图中的所有 creat。
+
+这样会启用 "重量级"(fat) LTO，会优化依赖图中的所有 crate。
 
 另外，在 `Cargo.toml` 中使用 `lto = "thin"` 则会启用 "轻量级"(thin) LTO——一种不那么激进的 LTO 形式，通常与 重量级 LTO 一样有效，但不会过多增加构建时间。
 
@@ -68,10 +74,12 @@ lto = true
 Rust 编译器将 crate 拆分为多个 [代码生成单元] 来并行化（同时加速）编译。
 然而，这会导致它错过一些可能的优化。
 如果你想要以更长的编译时间为代价，提升运行时性能，你可以将单元数设置为 1：
+
 ```toml
 [profile.release]
 codegen-units = 1
 ```
+
 [**示例**](https://likebike.com/posts/How_To_Write_Fast_Rust_Code.html#emit-asm).
 
 [代码生成单元]: https://doc.rust-lang.org/rustc/codegen-options/index.html#codegen-units
@@ -85,8 +93,9 @@ codegen-units = 1
 [特定 CPU 架构]: https://doc.rust-lang.org/1.41.1/rustc/codegen-options/index.html#target-cpu
 
 例如，如果你向 rustc 传递 `-C target-cpu=native`，他会为你当前 CPU 使用最合适的指令：
+
 ```bash
-$ RUSTFLAGS="-C target-cpu=native" cargo build --release
+RUSTFLAGS="-C target-cpu=native" cargo build --release
 ```
 
 这可能产生很大的影响，特别是当编译器发现了你代码中进行矢量化的机会。
@@ -103,6 +112,7 @@ $ RUSTFLAGS="-C target-cpu=native" cargo build --release
 
 如果你不需要捕获或展开 panic，你可以告诉编译器在 panic 时简单的 abort。
 这可以减少二进制文件体积，略微增加性能：
+
 ```toml
 [profile.release]
 panic = "abort"
@@ -110,12 +120,11 @@ panic = "abort"
 
 ## Profile-guided Optimization
 
-Profile-guided optimization (PGO) is a compilation model where you compile
-your program, run it on sample data while collecting profiling data, and then
-use that profiling data to guide a second compilation of the program.
+Profile-guided optimization (PGO)是一种编译模型——
+编译你的程序，用采样数据运行并收集性能分析数据，然后基于这些数据引导改程序的下次编译。
 [**Example**](https://blog.rust-lang.org/inside-rust/2020/11/11/exploring-pgo-for-the-rust-compiler.html).
 
-It is an advanced technique that takes some effort to set up, but is worthwhile
-in some cases. See the [rustc PGO documentation] for details.
+这是一种较高级的技术，需要花一些精力设置，但有时值得这样做。
+详见[rustc PGO 文档]。
 
-[rustc PGO documentation]: https://doc.rust-lang.org/rustc/profile-guided-optimization.html
+[rustc PGO 文档]: https://doc.rust-lang.org/rustc/profile-guided-optimization.html

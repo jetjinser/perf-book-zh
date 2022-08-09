@@ -10,9 +10,11 @@ cause sub-optimal performance.
 [clippy]: https://github.com/rust-lang/rust-clippy
 
 Once installed, it is easy to run:
+
 ```text
 cargo clippy
 ```
+
 The full list of performance lints can be seen by visiting the [lint list] and
 deselecting all the lint groups except for "Perf".
 
@@ -33,6 +35,7 @@ You can use `clippy`'s [`disallowed_types`] lint, added in Rust 1.55, to avoid
 this problem. For example, to disallow the use of the standard hash tables (for
 reasons explained in the [Hashing] section) add a `clippy.toml` file to your
 code with the following lines.
+
 ```toml
 disallowed-types = ["std::collections::HashMap", "std::collections::HashSet"]
 ```
@@ -41,8 +44,10 @@ disallowed-types = ["std::collections::HashMap", "std::collections::HashSet"]
 [`disallowed_types`]: https://rust-lang.github.io/rust-clippy/master/index.html#disallowed_types
 
 Then add the following declaration to your Rust code.
-```
+
+```rust
 #![warn(clippy::disallowed_type)]
 ```
+
 This is necessary because `disallowed_type` is (at the time of writing) a
 "nursery" (under development) lint. This may change in the future.

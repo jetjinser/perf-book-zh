@@ -14,6 +14,12 @@
 
 渲染好的书会放在[这里](https://poly000.github.io/perf-book-zh/)。
 
+## 参与翻译
+
+本书倾向于使用英语原词，除非有社区认可并且很难产生歧义的中文对应词汇。
+
+由于缺少翻译人员，翻译进度可能会十分缓慢。
+
 ## Building
 
 The book is built with [`mdbook`](https://github.com/rust-lang/mdBook), which

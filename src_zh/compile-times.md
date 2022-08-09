@@ -1,74 +1,72 @@
-# Compile Times
+# 编译时间
 
-Although this book is primarily about improving the performance of Rust
-programs, this section is about reducing the compile times of Rust programs,
-because that is a related topic of interest to many people.
+虽然这本书主要关于提升Rust程序的性能，这一节是关于减少Rust程序的编译时间，
+因为这也是大多人关注的重要话题。
 
 ## Linking
 
-A big part of compile time is actually linking time, particularly when
-rebuilding a program after a small change. It is possible to select a faster
-linker than the default one.
+编译时间，其实有很大一部分是链接时间。尤其是小更改以后重新构建程序时。
+我们可以选择比默认的更快的链接器。
 
-One option is [lld], which is available on Linux and Windows.
+这里推荐[lld]，它支持ELF，PE/COFF，Mach-O，wasm等等。
 
 [lld]: https://lld.llvm.org/
 
-To specify lld from the command line, precede your build command with
-`RUSTFLAGS="-C link-arg=-fuse-ld=lld"`.
+通过命令行指定使用 lld，你可以在你的构建命令前加上
 
-To specify lld from a [config.toml] file (for one or more projects), add these
-lines:
-```text
+```bash
+RUSTFLAGS="-C link-arg=-fuse-ld=lld"
+```
+
+通过[config.toml]指定使用 lld（应用于一个或者多个项目)，加入这些行：
+
+```toml
 [build]
 rustflags = ["-C", "link-arg=-fuse-ld=lld"]
 ```
+
 [config.toml]: https://doc.rust-lang.org/cargo/reference/config.html
 
-lld is not fully supported for use with Rust, but it should work for most use
-cases on Linux and Windows. There is a [GitHub Issue] tracking full support for
-lld.
+lld并未完全支持让Rust使用，但大多情况下可以。有个[Github Issue]追踪lld的完整支持。
 
-Another option is [mold], which is currently only available on Linux. It is
-specified in much the same way as lld. Simply substitute `mold` for `lld` in
-the instructions above.
+另外你也可以选择[mold]，目前只支持ELF。指定使用它和lld一样，把`lld`换成`mold`就可以了。
 
 [mold]: https://github.com/rui314/mold
 
-mold is often faster than lld. It is also much newer and may not work in all
-cases.
+mold通常比lld更快。它也更新，有时无法工作。
 
 [GitHub Issue]: https://github.com/rust-lang/rust/issues/39915#issuecomment-618726211
 
-## Incremental Compilation
+## 增量编译
 
-The Rust compiler supports [incremental compilation], which avoids redoing
-work when you recompile a crate. It can greatly speed up compilation, at the
-cost of sometimes making the produced executable run a little more slowly. For
-this reason, it is only enabled by default for debug builds. If you want to
-enable it for release builds as well, add the following lines to the
-`Cargo.toml` file.
+Rust编译器支持[增量编译]，避免在重编译的时候做重复的工作。它可以大大提升编译速度，
+但有时会让生成的可执行程序运行的慢一些。因此，它只默认为调试构建启用。
+如果你也想为发布构建启用，把这些加到`Cargo.toml`：
+
 ```toml
 [profile.release]
 incremental = true
 ```
-See the [Cargo documentation] for more details about the `incremental` setting, and
-about enabling specific settings for different profiles.
 
-[incremental compilation]: https://blog.rust-lang.org/2016/09/08/incremental.html
-[Cargo documentation]: https://doc.rust-lang.org/cargo/reference/profiles.html#incremental
+`incremental`设置，以及为不同配置启用特定设置详见[Cargo文档]。
 
-## Visualization 
+[增量编译]: https://blog.rust-lang.org/2016/09/08/incremental.html
+[Cargo文档]: https://doc.rust-lang.org/cargo/reference/profiles.html#incremental
 
-Cargo has a feature that lets you visualize compilation of your
-program. Build with this command (1.60 or later):
+## 可视化
+
+Cargo有个功能，可以可视化你的程序的编译过程。在Rust 1.60以上使用该命令构建：
+
 ```text
 cargo build --timings
 ```
-or this (1.59 or earlier):
+
+或者（1.59以下）：
+
 ```text
 cargo +nightly build -Ztimings
 ```
+
 On completion it will print the name of an HTML file. Open that file in a web
 browser. It contains a [Gantt chart] that shows the dependencies between the
 various crates in your program. This shows how much parallelism there is in
