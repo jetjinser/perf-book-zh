@@ -1,8 +1,7 @@
-# Profiling
+# 性能分析
 
-When optimizing a program, you also need a way to determine which parts of the
-program are "hot" (executed frequently enough to affect runtime) and worth
-modifying. This is best done via profiling.
+在优化程序时，你需要判断你的程序哪些部分是“热点”（执行的足够频繁，足以影响运行时间），值得修改。
+通过性能分析，你可以很方便地判断。
 
 ## Profilers
 

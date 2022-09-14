@@ -6,7 +6,7 @@
 - [基准测试](benchmarking.md)
 - [编译配置](build-configuration.md)
 - [Linting](linting.md)
-- [Profiling](profiling.md)
+- [性能分析](profiling.md)
 - [Inlining](inlining.md)
 - [Hashing](hashing.md)
 - [Heap Allocations](heap-allocations.md)
