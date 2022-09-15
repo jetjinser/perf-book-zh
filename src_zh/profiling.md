@@ -5,21 +5,18 @@
 
 ## Profilers
 
-There are many different profilers available, each with their strengths and
-weaknesses. The following is an incomplete list of profilers that have been
-used successfully on Rust programs.
-- [perf] is a general-purpose profiler that uses hardware performance counters.
-  [Hotspot] and [Firefox Profiler] are good for viewing data recorded by perf.
-  It works on Linux.
-- [Instruments] is a general-purpose profiler that comes with Xcode on macOS.
-- [AMD μProf] is a general-purpose profiler. It works on Windows and Linux.
-- [flamegraph] is a Cargo command that uses perf/DTrace to profile your
-  code and then displays the results in a flame graph. It works on Linux and
-  all platforms that support DTrace (macOS, FreeBSD, NetBSD, and possibly
-  Windows).
-- [Cachegrind] & [Callgrind] give global, per-function, and per-source-line
-  instruction counts and simulated cache and branch prediction data. They work
-  on Linux and some other Unixes.
+有很多不同的性能分析工具，它们都有自己的长处与短处。
+
+下面是可以对Rust程序使用的性能分析工具的不完整列表。
+- [perf] 是一个通用性能分析工具，使用[HPC](https://en.wikipedia.org/wiki/Hardware_performance_counter)。
+  [Hotspot] 和 [Firefox Profiler] 都可以用来查看perf记录的数据。可用于Linux。
+- [Instruments] 是Mac的Xcode自带的通用性能分析工具。
+- [AMD μProf] 是一个通用性能分析工具。可用于Linux/Windows。
+- [flamegraph] 是一个cargo命令，使用perf/DTrace对你的代码进行性能分析，
+  并将结果显示为火焰图。可用于Linux和任何支持DTrace的平台（macOS, FreeBSD, NetBSD, Windows也可能支持）
+- [Cachegrind] & [Callgrind] 分别提供了全局，函数甚至源码行粒度的指令count，
+  并模拟了缓存和分支预测数据。
+  它们可用于Linux和其他一些Unix系统。
 - [DHAT] is good for finding which parts of the code are causing a lot of
   allocations, and for giving insight into peak memory usage. It can also be
   used to identify hot calls to `memcpy`. It works on Linux and some other
