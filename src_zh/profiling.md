@@ -6,16 +6,17 @@
 ## 性能分析器（Profilers）
 
 有许多不同的性能分析器，每一个都有其优势和劣势。
-下面是一个不完整的清单，其中包括已经成功用于Rust程序的性能分析器。
+下面是一个不完整的清单，其中包括已经成功用于 Rust 程序的性能分析器。
 
-- [perf] 是一个通用的性能分析器，它使用 hardware performance counters。
+- [perf] 是一个通用的性能分析器，它使用 hardware performance counters ([HPC](https://en.wikipedia.org/wiki/Hardware_performance_counter))。
   [Hotspot] 和 [Firefox Profiler] 是查看 perf 记录的数据的好工具。它在 Linux 上工作。
 - [Instruments] 是一个通用的性能分析器，在 macOS 的 Xcode 中自带。
-- [AMD μProf] 是一个通用的性能分析器，他在 Windows 和 Linux 中工作。
+- [AMD μProf] 是一个通用的性能分析器，在 Windows 和 Linux 上工作。
 - [flamegraph] 是一个 Cargo 命令，它使用 perf/DTrace 对你的代码进行分析，然后以火焰图的形式显示结果。
   它适用于 Linux 和所有支持 DTrace 的平台（macOS、FreeBSD、NetBSD，可能还有 Windows）。
-- [Cachegrind] 和 [Callgrind] 提供了全局的、每个函数的和每行源码的指令计数以及模拟的缓存和分支预测数据
-  它们可以在 Linux 和其他一些 Unixes 上运行。
+- [Cachegrind] 和 [Callgrind] 提供了全局的、每个函数的和每行源码的指令计数（instruction counts）
+  以及模拟的缓存（simulated cache）和分支预测数据（branch prediction data）。
+  它们可以在 Linux 和其他一些 Unix 系统上运行。
 - [DHAT] 有利于找到代码中哪些部分导致了大量的分配，并能深入了解内存使用的峰值。它还可以用来识别对 memcpy 的热调用（hot calls）。
   [dhat-rs] 是一个实验性的替代品，功能稍差，需要对你的 Rust 程序做一些小的改动，但在所有平台上都能使用。
 - [heaptrack] 和 [bytehound] 是堆分析工具。它们在 Linux 上工作
