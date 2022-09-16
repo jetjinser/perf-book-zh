@@ -15,7 +15,7 @@
 Rust 的内置基准测试（[benchmark tests]）是一个简单的起点，
 但它们使用的是不稳定的特性（unstable features），而且只适用于 Nightly Rust。
 [`bencher`] crate 与其类似，但它适用于稳定的 Rust。[Criterion] 是一个更复杂的选择。
-自定义基准线束也是可能的。例如，[rustc-perf] 是用于对Rust编译器进行基准测试的线束。
+自定义 benchmark harness 也是可能的。例如，[rustc-perf] 是用于对 Rust 编译器进行基准测试的 harness。
 
 [benchmark tests]: https://doc.rust-lang.org/1.16.0/book/benchmark-tests.html
 [`bencher`]: https://crates.io/crates/bencher
