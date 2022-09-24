@@ -1,4 +1,4 @@
-# Hashing
+# 散列
 
 `HashSet` and `HashMap` are two widely-used types. The default hashing
 algorithm is not specified, but at the time of writing the default is an

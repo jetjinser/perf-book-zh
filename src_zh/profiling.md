@@ -1,5 +1,7 @@
 # 性能分析
 
+> by @[jinser](https://github.com/jetjinser) and @[poly000](https://github.com/poly000)
+
 在优化程序时，你需要判断你的程序哪些部分是“热点”（执行得足够频繁，足以影响运行时间），值得修改。
 通过性能分析，你可以很方便地判断。
 
@@ -48,30 +50,28 @@
 [profile.release]
 debug = 1
 ```
+`debug` 设置详见[Cargo 文档]。
 
-关于调试设置的更多细节，请参见 Cargo 文档（[Cargo documentation]）。
+[Cargo 文档]: https://doc.rust-lang.org/cargo/reference/profiles.html#debug
 
-[Cargo documentation]: https://doc.rust-lang.org/cargo/reference/profiles.html#debug
-
-不幸的是，即使做了上述步骤，你也不会得到标准库代码的详细分析信息。
-这是因为 Rust 标准库的出货版本没有建立调试信息。为了解决这个问题，
-你可以按照[这里的说明]建立你自己版本的编译器和标准库，并在 config.toml 文件中加入以下几行。
+然而，即使做了上述步骤，你也无法得到标准库的详细性能分析信息。
+这是因为 Rust 标准库发布版本不携带调试信息。你可以用[这里的方法]自己编译一份标准库与编译器，并将如下行添加到 `config.toml`：
 
  ```toml
 [rust]
 debuginfo-level = 1
 ```
 
-这很麻烦，但在某些情况下可能值得付出努力。
+这有些麻烦，但有时值得这么做。
 
-[这里的说明]: https://github.com/rust-lang/rust
+[这里的方法]: https://github.com/rust-lang/rust
 
-## Symbol Demangling
+## 符号Demangling
 
-Rust 使用一种修饰方案来对编译后的代码中的函数名进行编码。
-如果性能分析器不知道这个方案，它的输出可能包含以 `_ZN` 或 `_R` 开头的符号名称，
+Rust 使用一种[mangle机制](https://rust-lang.github.io/rfcs/2603-rust-symbol-name-mangling-v0.html)，对生成的代码中的符号名进行编码。
+如果性能分析器不支持这种机制，它的输出可能包含以 `_ZN` 或 `_R` 开头的符号名称，
 例如 `_ZN3foo3barE` 或 `_ZN28_$u7b$$u7b$closure$u7d$$u7d$E` 或 `_RMCsno73SFvQKx_1cINtB0_3StrKRe616263_E`
 
-像这样的名字可以用 [`rustfilt`] 手动去除修饰。
+这种符号名可以用[`rustfilt`]手动demangle。
 
 [`rustfilt`]: https://crates.io/crates/rustfilt

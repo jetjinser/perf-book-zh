@@ -1,8 +1,7 @@
-# Inlining
+# 内联优化
 
-Entry to and exit from hot, uninlined functions often accounts for a
-non-trivial fraction of execution time. Inlining these functions can provide
-small but easy speed wins. 
+进入与退出一个未内联的热点函数，往往会占用执行时间不可忽略的一部分。
+内联这些函数可以得到小但简单的速度提升。
 
 There are four inline attributes that can be used on Rust functions.
 - **None**. The compiler will decide itself if the function should be inlined.
